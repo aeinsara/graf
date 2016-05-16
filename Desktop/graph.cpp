@@ -39,45 +39,55 @@ public:
 	}
 };
 
-class Nod
+class Node
 {
 private:
 	bool type;
 	char name;
-	Nod *otherNod;
+	char naber;
+	Node *otherNod;
 	int weight;
 	string color;
 
 public:
-	Nod(bool type, char name, Nod *otherNod, int weight, string color)
+	Node( char name,bool type, int weight, string color)
 	{
 		this -> type = type;
 		this -> name = name;
-		this -> otherNod = otherNod;
+		//this -> otherNod = otherNod;
 		this -> weight = weight;
 		this -> color = color;
 	}
 
-	void setFirstNod(bool type, char name, string color)
+	void setFirstNod(char name1, bool type, string color)
 	{
+		this -> name = name1;
 		this -> type = type;
-		this -> name = name;
 		this -> color = color;
 	}
 
-	void setSecondNod( Nod *otherNod, int weight)
+	void setSecondNod(char naber, int weight)
 	{
-		this -> otherNod = otherNod;
+		this -> naber = naber;
 		this -> weight = weight;
 	}
 
+	void firstPrint ()
+	{
+		cout << name << "\t" <<  type << "\t" << color << "\n";
+	}
+
+	void secondPrint ()
+	{
+		cout << naber << "\t" << weight << "\t";
+	}
 
 };
 
 class LinkedList
 {
 private:
-	Nod *nod;
+	Node *nod;
 
 public:
 	LinkedList()
@@ -91,21 +101,23 @@ public:
 int main()
 {
 	char name;
+	char naber;
 	bool type;
 	string color;
-	char otherNod;
 	int weight;
+	int a;
 
 	Triangle tri(0, 0);
 	Circle cir(0, 0, 0);
 
-	vector <Nod *> nod;
-	Nod *n;
-	vector <Nod *> nod2;
-	vector <Nod *> nod3;
-	vector <Nod *> nod4;
-	vector <Nod *> nod5;
-	vector <Nod *> nod6;
+	vector <Node *> nod;
+	Node *n;
+	n = new Node(' ', false, 0, " ");
+	vector <Node *> nod2;
+	vector <Node *> nod3;
+	vector <Node *> nod4;
+	vector <Node *> nod5;
+	vector <Node *> nod6;
 
 //	nod[1];
 
@@ -113,18 +125,39 @@ int main()
 
 	if (!graphFile) 
 	{
-		cerr << "file not opened!!!" << endl;
+		cerr << "file not opened!!" << endl;
 		//exit(1);
 	}
 
 	for (int i = 0; graphFile >> name >> type >> color; i++)
 	{
 		nod.push_back(n);
-		//nod[i]->setFirstNod(name,  type, color);
-		cout << name << "\t" <<  type << "\t" << color << "\n";
-		break;
+		nod[i]->setFirstNod(name,  type, color);
+		nod[i]->firstPrint();
+		if (i==5)
+			break;
 	}
 
-	system ("PAUSE");
+	for (int i = 0; graphFile >> naber >> weight; i++)
+	{
+		nod.push_back(n);
+		nod[i]->setSecondNod(naber, weight);
+		nod[i]->secondPrint();
+		graphFile >> naber;
+		if (naber != '/')
+		{
+			i--;
+			a = graphFile.tellg();
+			graphFile.seekg(a-1);
+		}
+
+		else
+		{
+			//graphFile.ignore(1);
+			cout << "\n";
+			//graphFile.seekg(a+1);
+		}
+	}
+
 	return 0;
 }
