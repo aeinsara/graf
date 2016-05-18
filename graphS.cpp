@@ -104,7 +104,7 @@ public:
 
 	void neighborPrint ()
 	{
-		cout << node->name << "\t" <<  weight << "\n";
+		cout << node->name << "\t" <<  weight << "\t";
 	}
 
 };
@@ -183,11 +183,10 @@ int main()
 
 		for (int j = 0; neighbor != '/'; j++)
 		{
-			graphFile.seekg(-1);
-			graphFile >> neighbor >> weight;
+			//graphFile.seekg(-1);
+			graphFile >> weight;
 		
 			node[i][j] = Neighbor(&nodeArr[1], weight);
-			//cout << weight << endl;
 			for (k = 0; k < size; k++)
 			{
 				if (nodeArr[k].getName() == neighbor)
@@ -199,7 +198,6 @@ int main()
 			}
 			
 			node[i][j].neighborPrint();
-			//node[i]->secondPrint();
 
 			graphFile >> neighbor;
 		}
