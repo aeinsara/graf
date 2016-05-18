@@ -20,7 +20,8 @@ class Triangle : public Shape{
 private:
 
 public:
-	Triangle(double x, double y) : Shape(x, y){
+	Triangle(double x, double y) : Shape(x, y)
+	{
 	}
 };
 
@@ -75,6 +76,19 @@ public:
 	{
 		return name;
 	}
+
+	bool getType()
+	{
+		return type;
+	}
+
+	string getColor()
+	{
+		return color;
+	}
+
+
+
 };
 
 class Neighbor
@@ -109,6 +123,16 @@ public:
 
 };
 
+string checkColor(Node *nodeArr, int i)
+{ 
+			if (nodeArr[i].getColor() ==  "blue")
+				return "blue";
+			else if (nodeArr[i].getColor() ==  "red")
+				return "red";
+			else if (nodeArr[i].getColor() ==  "yellow")
+				return "yellow";
+}
+
 int main()
 {
 	char name;
@@ -117,10 +141,6 @@ int main()
 	string color;
 	int weight = 3;
 	int ptr;
-	int k;
-
-	Triangle tri(0, 0);
-	Circle cir(0, 0, 0);
 
 	const int size = 6;
 	Node nodeArr[size];
@@ -130,64 +150,37 @@ int main()
 	vector <Neighbor >;
 	Neighbor *n;
 	n = new Neighbor;
-	vector <Node *> node2;
-	vector <Node *> node3;
-	vector <Node *> node4;
-	vector <Node *> node5;
-	vector <Node *> node6;
 
 	ifstream graphFile("graph.txt" , ios::in);
 
 	if (!graphFile) 
 	{
 		cerr << "file not opened!!" << endl;
-		//exit(1);
 	}
 
-	//node.resize(size);
 
 	for (int i = 0; graphFile >> name >> type >> color; i++)
 	{
-		/*node[i].resize(size);
-		node[i].push_back(neighbors);
-		neighbors.push_back(nab);
-
-		
-		for(int i = 0 ; i < m ; ++i)
-		{
-    		//Grow Columns by n
-    		a[i].resize(n);
-		}
-		*/
 		nodeArr[i] = Node(' ', true, " ");
 		nodeArr[i].setNode(name, type, color);
 		nodeArr[i].nodePrint();
-	
-		//node[0][i]->setFirstNode(name, type, color);
-		//node[0][i]->firstPrint();
-		//node[i]->setFirstNode(name,  type, color);
-		//node[i]->firstPrint();
+		
 		if (i == 5)
 			break;
 	}
 
 	node.resize(size);
 
-//.........................................................	
-
 	for (int i = 0; graphFile >> neighbor; i++)
 	{	
-		node[i].resize(size);
-		//graphFile >> naber;
-		//graphFile >> neighbor >> weight;
+		node[i].resize(size-1);
 
 		for (int j = 0; neighbor != '/'; j++)
 		{
-			//graphFile.seekg(-1);
 			graphFile >> weight;
 		
 			node[i][j] = Neighbor(&nodeArr[1], weight);
-			for (k = 0; k < size; k++)
+			for (int k = 0; k < size; k++)
 			{
 				if (nodeArr[k].getName() == neighbor)
 				{
@@ -203,20 +196,32 @@ int main()
 		}
 
 		cout << "\n";
-/*
-		graphFile >> naber;
-		if (naber != '/')
+	}
+
+	for (int  i = 0;  i < size;  i++)
+	{
+		color= checkColor(nodeArr,i);
+		if (nodeArr[i].getType() == 0)
 		{
-			i--;
-			ptr = graphFile.tellg();
-			graphFile.seekg(ptr-1);
+			Triangle tri( i * 5 + 5 , i);
+			//make a Qt triangle
 		}
 
 		else
 		{
-			cout << "\n";
+			Circle cir( i * 5 + 5 , i, 2);
+			//make a Qt circle
 		}
-*/
+
+		cout << "color : " << color << "\t";
+	}
+
+	for (int  i = 0;  i < size;  i++)
+	{
+		for (int  j = 0;  j < size;  j++)
+		{
+
+		}
 	}
 
 	system ("PAUSE");
