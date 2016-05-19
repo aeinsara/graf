@@ -17,8 +17,6 @@ public:
 		this->x = x;
 		this->y = y;
 	}
-
-	Shape(){}
 };
 
 class Triangle : public Shape{
@@ -27,22 +25,10 @@ private:
 public:
 	Triangle(double x, double y) : Shape(x, y){}
 
-	Triangle() : Shape (){}
-
-	void set_tri(double x, double y){
+	void set_triangle(double x, double y){
 		this->x = x;
 		this->y = y;
 	}
-
-	/*double getX()
-	{
-		return x;
-	}
-
-	double getY()
-	{
-		return y;
-	}*/
 };
 
 class Circle : public Shape{
@@ -54,23 +40,11 @@ public:
 		this->r = r;
 	}
 
-	Circle() : Shape(){}
-
-	void set_cir(double x, double y, double r){
+	void set_circle(double x, double y, double r){
 		this->x = x;
 		this->y = y;
 		this->r = r;
 	}
-
-	/*double getX()
-	{
-		return x;
-	}
-
-	double getY()
-	{
-		return y;
-	}*/
 };
 
 class Node
@@ -199,7 +173,8 @@ int main()
 	bool type;
 	string color;
 	int weight;
-
+	Shape *shape;
+	shape = new Shape(0, 0);
 	
 	const int size = 6;
 	Node nodeArr[size];
@@ -269,14 +244,16 @@ int main()
 		color = checkColor(nodeArr,i);
 		if (nodeArr[i].getType() == 0)
 		{
-			Triangle tri(nodeArr[i].getX(), nodeArr[i].getY());
-			//make a Qt triangle whit color
+			Triangle *triangle = static_cast<Triangle *>(shape);
+			triangle->set_triangle(nodeArr[i].getX(), nodeArr[i].getY());
+			//make a Qt triangle with color
 		}
 
 		else
 		{
-			Circle cir(nodeArr[i].getX(), nodeArr[i].getY(), 2);
-			//make a Qt circle whit color
+			Circle *circle = static_cast<Circle *>(shape);
+			circle->set_circle(nodeArr[i].getX(), nodeArr[i].getY(), 2);
+			//make a Qt circle with color
 		}
 	}
 
