@@ -14,10 +14,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-      void paintEvent(QPaintEvent *);
-
-private slots:
-      //void on_pushButton_clicked();
+     void paintEvent(QPaintEvent *);
 
 private:
     Ui::MainWindow *ui;
@@ -89,12 +86,12 @@ class Node
 private:
     char name;
     bool type;
-    std::string color;
+    char color;
     double x;
     double y;
 
 public:
-    Node(char name,bool type, std::string color)
+    Node(char name,bool type, char color)
     {
         this -> type = type;
         this -> name = name;
@@ -103,13 +100,13 @@ public:
 
     Node(){}
 
-    void setNode(char name, bool type, std::string color, double x, double y)//......................
+    void setNode(char name, bool type, char color, double x, double y)
     {
         this -> name = name;
         this -> type = type;
         this -> color = color;
-        this -> x = x;//......
-        this -> y = y;//..........
+        this -> x = x;
+        this -> y = y;
 
     }
 
@@ -123,17 +120,17 @@ public:
         return type;
     }
 
-    std::string getColor()
+    char getColor()
     {
         return color;
     }
 
-    double getX()//.......
+    double getX()
     {
         return x;
     }
 
-    double getY()//.........
+    double getY()
     {
         return y;
     }
@@ -166,7 +163,6 @@ public:
 
     char getName()
     {
-        //cout << node->name << "*\t";
         return node->name;
     }
 
@@ -182,6 +178,8 @@ public:
 
 
 };
+
+
 
 
 

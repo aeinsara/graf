@@ -9,7 +9,10 @@
 #include <QtGlobal>
 #include <QTime>
 #include <QDebug>
+#include <qmath.h>
+
 using namespace std;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,15 +21,32 @@ MainWindow::MainWindow(QWidget *parent) :
     palette.setColor(backgroundRole(), Qt::white);
     setPalette(palette);
 }
+
+bool checkDistance (Node nodeArr[], int x, int y, int i)
+{
+    for (int j = i - 1; j >= 0; j--)
+    {
+        if (sqrt(pow(nodeArr[j].getX() - x, 2) + pow(nodeArr[j].getY() - y, 2)) < 100 )
+        {
+           return false;
+        }
+    }
+
+    return true;
+
+}
+
 void MainWindow::paintEvent(QPaintEvent *)
 {
-
-
     char name;
     char neighbor;
     bool type;
-    string color;
+    char color;
     int weight;
+
+    int x;
+    int y;
+
     Shape *shape;
     shape = new Shape(0, 0);
 
@@ -42,7 +62,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 
-    ifstream graphFile("/home/samin/graph.txt" , ios::in);
+    ifstream graphFile("/home/aeinsara/graph.txt" , ios::in);
 
     if (!graphFile)
     {
@@ -53,9 +73,14 @@ void MainWindow::paintEvent(QPaintEvent *)
 
     for (int i = 0; graphFile >> name >> type >> color; i++)
     {
-        nodeArr[i] = Node(' ', true, " ");
-        nodeArr[i].setNode(name, type, color, rand() % 400 + 20, rand() % 400 + 20);
- //       nodeArr[i].nodePrint();
+        nodeArr[i] = Node(' ', true, ' ');
+        do{
+            x = rand() % 400 + 100 ;
+            y = rand() % 400 + 20 ;
+
+        }while (checkDistance(nodeArr, x, y, i) == false);
+
+        nodeArr[i].setNode(name, type, color, x, y);
 
         if (i == 5)
             break;
@@ -90,7 +115,6 @@ void MainWindow::paintEvent(QPaintEvent *)
 
             graphFile >> neighbor;
         }
-        cout << "\n";
     }
 
 //..............* check the shape of nodes and draw them *...................
@@ -98,14 +122,13 @@ void MainWindow::paintEvent(QPaintEvent *)
     for (int  i = 0;  i < size;  i++)
     {
 
-        if(color=="g")
-             painter.setPen(Qt::darkGreen);
-        if(color=="r")
-             painter.setPen(Qt::darkRed);
-        if(color=="b")
-             painter.setPen(Qt::darkBlue);
+        if(nodeArr[i].getColor() == 'y')
+             painter.setPen(Qt::darkYellow);
+        else if(nodeArr[i].getColor() == 'r')
+             painter.setPen(Qt::red);
+        else if(nodeArr[i].getColor() == 'b')
+             painter.setPen(Qt::blue);
 
- //       color = checkColor(nodeArr,i);
         if (nodeArr[i].getType() == 0)
         {
             Triangle *triangle = static_cast<Triangle *>(shape);
@@ -137,20 +160,19 @@ void MainWindow::paintEvent(QPaintEvent *)
     {
         for (int  j = 0; node[i][j].getName() != '/' && j < (size - 1);  j++)
         {
-   //////////////////////         cout << node[i][j].getName() <<"\t";
             for (int k = i; k < size; k++)
             {
                 if (nodeArr[k].getName() == node[i][j].getName())
                 {
                     //draw a line x1 = nodeArr[k].getX() y1 = nodeArr[k].getY() ## x2 = nodeArr[j].getX() y2 = nodeArr[j].getY()
                     painter.drawLine(nodeArr[k].getX(), nodeArr[k].getY(), nodeArr[j].getX(), nodeArr[j].getY());
+                    painter.setPen(Qt::black);
 
                     //dar mokhtasat x = (x1 + x2)/2 ## y = (y1 + y2)/2  : cout << node[i][j].getWeight();
                     break;
                 }
             }
         }
-  //////////////////////      cout << "\n";
     }
 
 
