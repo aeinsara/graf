@@ -18,14 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
     palette.setColor(backgroundRole(), Qt::white);
     setPalette(palette);
 }
+
+
 void MainWindow::paintEvent(QPaintEvent *)
 {
-
-
     char name;
     char neighbor;
     bool type;
-    string color;
+    char color;
     int weight;
     Shape *shape;
     shape = new Shape(0, 0);
@@ -53,7 +53,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
     for (int i = 0; graphFile >> name >> type >> color; i++)
     {
-        nodeArr[i] = Node(' ', true, " ");
+        nodeArr[i] = Node(' ', true, ' ');
         nodeArr[i].setNode(name, type, color, rand() % 400 + 20, rand() % 400 + 20);
  //       nodeArr[i].nodePrint();
 
@@ -98,14 +98,14 @@ void MainWindow::paintEvent(QPaintEvent *)
     for (int  i = 0;  i < size;  i++)
     {
 
-        if(color=="g")
-             painter.setPen(Qt::darkGreen);
-        if(color=="r")
-             painter.setPen(Qt::darkRed);
-        if(color=="b")
-             painter.setPen(Qt::darkBlue);
+        if(nodeArr[i].getColor() == 'y')
+             painter.setPen(Qt::darkYellow);
+        else if(nodeArr[i].getColor() == 'r')
+             painter.setPen(Qt::red);
+        else if(nodeArr[i].getColor() == 'b')
+             painter.setPen(Qt::blue);
 
- //       color = checkColor(nodeArr,i);
+       // color = checkColor(nodeArr,i);
         if (nodeArr[i].getType() == 0)
         {
             Triangle *triangle = static_cast<Triangle *>(shape);
@@ -144,6 +144,7 @@ void MainWindow::paintEvent(QPaintEvent *)
                 {
                     //draw a line x1 = nodeArr[k].getX() y1 = nodeArr[k].getY() ## x2 = nodeArr[j].getX() y2 = nodeArr[j].getY()
                     painter.drawLine(nodeArr[k].getX(), nodeArr[k].getY(), nodeArr[j].getX(), nodeArr[j].getY());
+                    painter.setPen(Qt::black);
 
                     //dar mokhtasat x = (x1 + x2)/2 ## y = (y1 + y2)/2  : cout << node[i][j].getWeight();
                     break;

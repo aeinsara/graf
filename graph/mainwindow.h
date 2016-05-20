@@ -89,12 +89,12 @@ class Node
 private:
     char name;
     bool type;
-    std::string color;
+    char color;
     double x;
     double y;
 
 public:
-    Node(char name,bool type, std::string color)
+    Node(char name,bool type, char color)
     {
         this -> type = type;
         this -> name = name;
@@ -103,7 +103,7 @@ public:
 
     Node(){}
 
-    void setNode(char name, bool type, std::string color, double x, double y)//......................
+    void setNode(char name, bool type, char color, double x, double y)//......................
     {
         this -> name = name;
         this -> type = type;
@@ -123,7 +123,7 @@ public:
         return type;
     }
 
-    std::string getColor()
+    char getColor()
     {
         return color;
     }
@@ -182,6 +182,8 @@ public:
 
 
 };
+
+
 
 
 
