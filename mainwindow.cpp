@@ -9,9 +9,7 @@
 #include <QtGlobal>
 #include <QTime>
 #include <QDebug>
-
 using namespace std;
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -20,105 +18,152 @@ MainWindow::MainWindow(QWidget *parent) :
     palette.setColor(backgroundRole(), Qt::white);
     setPalette(palette);
 }
-
 void MainWindow::paintEvent(QPaintEvent *)
 {
 
-    int count = 20;
-    int x, y;
-    int aryx[6], aryy[6];
+
+    char name;
+    char neighbor;
+    bool type;
+    string color;
+    int weight;
+    Shape *shape;
+    shape = new Shape(0, 0);
+
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+
+    const int size = 6;
+    Node nodeArr[size];
+
+    QVector <vector <Neighbor > > node;
+   // QVector <Neighbor>;
+
     QTime time = QTime::currentTime();
     qsrand((uint)time.msec());
 
-    ifstream file("/home/aeinsara/23.txt");
+    ifstream graphFile("/home/samin/graph.txt" , ios::in);
 
-    if (file == NULL)
-        std::cout << "file not found" << endl;
+    if (!graphFile)
+    {
+        std::cout << "file not opened!!" << endl;
+    }
 
-    else
+//...............* read feature of nodes from file *......................
+
+    for (int i = 0; graphFile >> name >> type >> color; i++)
+    {
+        nodeArr[i] = Node(' ', true, " ");
+        nodeArr[i].setNode(name, type, color, rand() % 400 + 20, rand() % 400 + 20);
+ //       nodeArr[i].nodePrint();
+
+        if (i == 5)
+            break;
+    }
+
+//..................* resize vectors *..................
+
+    node.resize(size);
+    for (int i = 0; i < size; i++)
+    {
+        node[i].resize(size - 1);
+        for (int j = 0; j < size - 1; j++)
+        node[i][j] = Neighbor(&nodeArr[1], 0);
+    }
+
+//................* read neighbors from file *...............
+
+    for (int i = 0; graphFile >> neighbor; i++)
+    {
+        node[i].resize(size - 1);
+        for (int j = 0; neighbor != '/'; j++)
         {
-        string name, name1;
-                string color, color1;
-                string shape,shape1[6],shape2[6];
-                for(int i=0;i<6;i++){
-                file >> name >> color >> shape;
-
-               // cout << name<<color<<shape<<endl;
-
-                name1 = name;
-                color1 = color;
-                shape1[i] = shape;
-                shape2[i]  = shape;
-                x = qrand() % 400 + 20;
-                y = qrand() % 400 + 20;
-                qDebug()<<x<<"   "<<y;
-
-                int m ,n;
-                if(color1 == "g")
-                     painter.setPen(Qt::darkGreen);
-                if(color1 == "r")
-                     painter.setPen(Qt::darkRed);
-                if(color1 == "b")
-                     painter.setPen(Qt::darkBlue);
-                if(shape1[i] == "cir")
-                     painter.drawEllipse( x, y, 40, 40 );
-                if(shape1[i] == "tri")
+            graphFile >> weight;
+            for (int k = 0; k < size; k++)
+            {
+                if (nodeArr[k].getName() == neighbor)
                 {
-                    painter.drawLine(x, y, x-20, y+30);
-                    painter.drawLine(x, y, x+20, y+30);
-                    painter.drawLine(x-20, y+30,x+20, y+30);
+                    node[i][j].setNeighbor(&nodeArr[k], weight);
+                    break;
                 }
-                n = y;
-                m = x;
-                aryx[i] = m;
-                aryy[i] = n;
-                }
-                int ary[6][6];
-                for(int i=0 ;i<6;i++)
-                {
-                    for(int j=0 ;j<6 ;j++)
-                    {
-                         file >> ary[i][j];
-                        int k = ary[i][j];
-                        if(j > i)
-                        {
-                           if(k == 1)
-                           {
-                               qDebug() << aryx[i] << "    " << aryy[i];
-                               painter.drawLine(aryx[i]+20, aryy[i]+20, aryx[j]+20, aryy[j]+20);
-                            }
-                        }
+            }
 
-                        if(j <= i)
-                            continue;
-                    }
-                }
-                file.close();
+            graphFile >> neighbor;
+        }
+        cout << "\n";
+    }
+
+//..............* check the shape of nodes and draw them *...................
+
+    for (int  i = 0;  i < size;  i++)
+    {
+
+        if(color=="g")
+             painter.setPen(Qt::darkGreen);
+        if(color=="r")
+             painter.setPen(Qt::darkRed);
+        if(color=="b")
+             painter.setPen(Qt::darkBlue);
+
+ //       color = checkColor(nodeArr,i);
+        if (nodeArr[i].getType() == 0)
+        {
+            Triangle *triangle = static_cast<Triangle *>(shape);
+            triangle->set_triangle(nodeArr[i].getX(), nodeArr[i].getY());
+            //make a Qt triangle with color::::::::::::::::::::::::::::::::::::::::::::
+
+            painter.drawLine(triangle->getX(), triangle->getY(), triangle->getX()-20, triangle->getY()+30);
+            painter.drawLine(triangle->getX(), triangle->getY(), triangle->getX()+20, triangle->getY()+30);
+            painter.drawLine(triangle->getX()-20, triangle->getY()+30,triangle->getX()+20, triangle->getY()+30);
+
         }
 
-   // painter.drawEllipse(99, 27,40,40);
-}
+        else
+        {
+            Circle *circle = static_cast<Circle *>(shape);
+            circle->set_circle(nodeArr[i].getX(), nodeArr[i].getY(), 2);
+            //make a Qt circle with color:::::::::::::::::::::::::::::::::::::::::::::::
 
+            painter.drawEllipse( circle->getX()-20, circle->getY()-20, 40, 40 );
+
+
+
+        }
+    }
+
+//............* find relation bittwin nodes and draw edges *.............
+
+    for (int  i = 0; i < size;  i++)
+    {
+        for (int  j = 0; node[i][j].getName() != '/' && j < (size - 1);  j++)
+        {
+   //////////////////////         cout << node[i][j].getName() <<"\t";
+            for (int k = i; k < size; k++)
+            {
+                if (nodeArr[k].getName() == node[i][j].getName())
+                {
+                    //draw a line x1 = nodeArr[k].getX() y1 = nodeArr[k].getY() ## x2 = nodeArr[j].getX() y2 = nodeArr[j].getY()
+                    painter.drawLine(nodeArr[k].getX(), nodeArr[k].getY(), nodeArr[j].getX(), nodeArr[j].getY());
+
+                    //dar mokhtasat x = (x1 + x2)/2 ## y = (y1 + y2)/2  : cout << node[i][j].getWeight();
+                    break;
+                }
+            }
+        }
+  //////////////////////      cout << "\n";
+    }
+
+
+
+
+
+
+
+
+}
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
-
-
-/*void MainWindow::on_pushButton_clicked()
-{
-    writefile();
-}*/
-/*void MainWindow::writefile()
-{
-    QString str = ui->lineEdit->text();;
-    QString filename = "data.txt";
-    QFile file(filename);
-    file.open(QIODevice::WriteOnly|QIODevice::Text);
-    QTextStream out (&file);
-    out<<str<<endl;
-}*/
 

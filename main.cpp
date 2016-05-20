@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     QGraphicsScene *scene = new QGraphicsScene();;
     QGraphicsView* view=new QGraphicsView(scene);
-    qDebug()<<"main";
+    qDebug()<<"hfje";
     w.setFixedSize(view->width(), view->height());
     w.show();
 
